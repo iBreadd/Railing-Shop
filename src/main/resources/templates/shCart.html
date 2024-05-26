@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    <title th:text="#{shCart.title}"></title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.5.2/cosmo/bootstrap.min.css"/>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <link rel="icon" type="image/x-icon" href="../static/assets/favicon.ico"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet"/>
+    <link href="../static/css/styles.css" rel="stylesheet"/>
+
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .navbar {
+            background-color: #343a40 !important;
+        }
+
+        .navbar-brand, .nav-link, .dropdown-toggle {
+            color: #ffffff !important;
+        }
+
+        .navbar-brand:hover, .nav-link:hover, .dropdown-toggle:hover {
+            color: #d4d4d4 !important;
+        }
+
+        .search-form-container input[type="text"], .search-form-container input[type="submit"], .search-form-container input[type="button"] {
+            margin-top: 10px;
+            margin-bottom: 10px;
+            border-radius: 20px;
+        }
+
+        .btn-outline-dark {
+            border-radius: 20px;
+            background-color: #343a40;
+            color: #ffffff;
+            border-color: #343a40;
+        }
+
+        .btn-outline-dark:hover {
+            background-color: #495057;
+            color: #ffffff;
+            border-color: #495057;
+        }
+
+        .table thead {
+            background-color: #343a40;
+            color: #ffffff;
+        }
+
+        .table tbody tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .btn-secondary {
+            border-radius: 20px;
+            background-color: #343a40;
+            border-color: #343a40;
+        }
+
+        .btn-secondary:hover {
+            background-color: #495057;
+            border-color: #495057;
+        }
+
+        footer {
+            background-color: #343a40;
+        }
+
+        footer p {
+            color: #ffffff;
+        }
+
+        .cart-container {
+            margin-top: 50px;
+        }
+        .flag-icon {
+            width: 24px; /* Adjust the width of the flag icon */
+            height: auto; /* Maintain aspect ratio */
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container px-4 px-lg-5">
+        <a class="navbar-brand" href="#!">Railing Shop</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span
+                class="navbar-toggler-icon"></span></button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
+                <li class="nav-item"><a class="nav-link active" th:href="@{/shop/all}" th:text="#{navbar.all}">Home</a></li>
+                <li class="nav-item"><a class="nav-link active" th:href="@{/shop/home}" th:text="#{navbar.home}">About Us</a></li>
+            </ul>
+            <div class="search-form-container d-flex">
+                <form th:action="@{/shop/all}" method="get" class="form-inline">
+                    Filter: <input type="text" name="keyword" id="keyword" size="30" th:value="${keyword}" class="form-control mr-2" required/>
+                    <input type="submit" value="Search" class="btn btn-outline-primary mr-2"/>
+                    <input type="button" value="Clear" id="btnClear" class="btn btn-outline-danger" onclick="clearSearch()"/>
+                </form>
+            </div>
+            <form class="d-flex" action="/cart">
+                <div class="nav-item dropdown ms-3">
+                    <a class="nav-link dropdown-toggle" id="menuDropdownButton" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" th:text="#{menu}">
+                    Menu
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="menuDropdownButton">
+                        <li><a class="dropdown-item" th:href="@{/shop/accountDetails}" th:text="#{navbar.profile}">View Account Details</a></li>
+                        <li><a class="dropdown-item" th:href="@{/shop/userOrders}" th:text="#{userOrders.title}">Orders</a></li>
+                        <li><a class="dropdown-item" th:href="@{/favourites}"th:text="#{navbar.favourites}">Favourites</a></li>
+                        <li><a class="dropdown-item" th:href="@{/comparison}" th:text="#{navbar.comparison}">Продукти за сравнение</a></li>
+                        <li><a class="dropdown-item" th:href="@{/messages/inbox}" th:text="#{navbar.notices}">Известия</a></li>
+                    </ul>
+                </div>
+                <div class="nav-item dropdown ms-3">
+                    <a class="nav-link dropdown-toggle" id="languageDropdownMenuButton" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" th:text="#{language}">
+                        Language
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="languageDropdownMenuButton">
+                        <li>
+                            <a class="dropdown-item" th:href="@{'?lang=bg'}">
+                                <img th:src="@{/img/bg.png}" class="flag-icon" alt="BG Flag">Български
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" th:href="@{'?lang=en'}">
+                                <img th:src="@{/img/eng.jpg}" class="flag-icon" alt="EN Flag">English
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </form>
+        </div>
+    </div>
+</nav>
+
+<div th:if="${message}" class="alert alert-success text-center">
+    [[${message}]]
+</div>
+
+<div class="container cart-container">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card">
+                <div class="card-body">
+                    <h1 class="text-center" th:text="#{shCart.description}">Shopping Cart</h1>
+                    <table class="table table-striped">
+                        <thead class="thead-dark">
+                        <tr class="text-center">
+                            <th th:text="#{shCart.productImage}">Product Image</th>
+                            <th th:text="#{shCart.productName}">Product Name</th>
+                            <th th:text="#{shCart.color}">Color</th>
+                            <th th:text="#{shCart.material}">Material</th>
+                            <th th:text="#{shCart.price}">Price</th>
+                            <th th:text="#{shCart.quantity}">Quantity</th>
+                            <th th:text="#{shCart.total}">Total</th>
+                            <th th:text="#{shCart.action}">Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr class="text-center" th:each="item : ${cart}">
+                            <td><img th:src="${item.product.imageUrl}" alt="Product Image" width="100"/></td>
+                            <td th:text="${item.product.name}"></td>
+                            <td th:text="${item.product.color}"></td>
+                            <td th:text="${item.product.material}"></td>
+                            <td th:text="${item.product.price}"></td>
+                            <td>
+                                <form th:action="@{/cart/updateQuantity}" method="post">
+                                    <input type="hidden" name="productId" th:value="${item.product.id}"/>
+                                    <input type="number" name="quantity" th:value="${item.quantity}" min="1" class="form-control" style="width: 80px; display: inline-block;"/>
+                                    <button type="submit" class="btn btn-outline-secondary btn-sm" th:text="#{shCart.update}">Update</button>
+                                </form>
+                            </td>
+                            <td th:text="${item.totalPrice}"></td>
+                            <td>
+                                <form th:action="@{/cart/remove/{productId}}" method="post">
+                                    <input type="hidden" name="productId" th:value="${item.product.id}"/>
+                                    <button type="submit" class="btn btn-outline-danger btn-sm" th:text="#{shCart.delete}">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="6" class="text-right"><h5><strong>Total price:</strong></h5></td>
+                            <td><h5><strong th:text="${total}"></strong></h5></td>
+                            <td></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <form th:action="@{/order/add}" method="get" class="text-center">
+                        <button type="submit" class="btn btn-primary" th:text="#{shCart.proceedToCheckout}">Proceed to checkout</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer class="py-5">
+    <div class="container"><p class="m-0 text-center text-white">Copyright &copy; Your Website 2022</p></div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../static/js/scripts.js"></script>
+</body>
+</html>

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="#{orders.title}">Orders</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+          crossorigin="anonymous">
+    <style>
+        .navbar {
+    background-color: rgba(255, 255, 255, 0.9); /* Полупрозрачен бял цвят */
+}
+.navbar {
+    background-color: #343a40; /* Тъмен цвят (сиво-черен) */
+}
+        .flag-icon {
+            width: 24px; /* Adjust the width of the flag icon */
+            height: auto; /* Maintain aspect ratio */
+        }
+        .logout-btn {
+            background-color: #dc3545;
+            border: none;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .logout-btn:hover {
+            background-color: #c82333;
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="#">Railing Shop</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+                <a class="nav-link" href="/shop/home" th:text="#{navbar.home}"></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/shop/all" th:text="#{navbar.all}"></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/shop/admins}" th:text="#{navbar.admins}"></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/shop/products}" th:text="#{navbar.products}"></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/messages/support}" th:text="#{navbar.support}"></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{'?lang=bg'}">
+                    <img th:src="@{/img/bg.png}" class="flag-icon">
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{'?lang=en'}">
+                    <img th:src="@{/img/eng.jpg}" class="flag-icon">
+                </a>
+            </li>
+        </ul>
+        <form class="d-flex" th:action="@{/shop/logout}" method="post">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+            <input type="submit" th:value="#{navbar.logout}" class="btn btn-info logout-btn"/>
+        </form>
+    </div>
+</nav>
+
+<div class="container">
+    <h1 th:text="#{orders.description}">Orders</h1>
+
+    <div class="row">
+        <div class="col-md-4">
+            <form method="post" th:action="@{/shop/orders/filter}">
+                <div class="form-group">
+                    <label for="orderStatus" th:text="#{orders.filter}">Filter by status:</label>
+                    <select class="form-control" id="orderStatus" name="status">
+                        <option value="" th:text="#{orders.selectStatus}">--Select a status--</option>
+                        <option value="ALL" th:text="#{orders.selectValue}">All</option>
+                        <option th:each="status : ${T(com.example.RailingShop.Enums.OrderStatus).values()}"
+                                th:value="${status}" th:text="${status.getValue()}"
+                                th:selected="${status == statusValue}"></option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary" th:text="#{orders.filterSubmit}">Filter</button>
+            </form>
+        </div>
+    </div>
+
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th th:text="#{orders.orderId}">Order ID</th>
+            <th th:text="#{orders.customerName}">User</th>
+            <th th:text="#{orders.totalPrice}">Total Price</th>
+            <th th:text="#{orders.status}">Status</th>
+            <th th:text="#{orders.action}"></th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="order : ${orders}">
+            <td th:text="${order.id}"></td>
+            <td th:text="${order.user.firstName + ' ' + order.user.firstName}"></td>
+            <td th:text="${order.totalPrice}"></td>
+            <td>
+                <form method="post" th:action="@{/shop/orders/{id}/status(id=${order.id})}" th:object="${order}">
+                    <div class="form-group">
+                        <select class="form-control" name="orderStatus" required>
+                            <option th:each="status : ${T(com.example.RailingShop.Enums.OrderStatus).values()}"
+                                    th:value="${status}" th:text="${status.name()}"
+                                 th:selected="${status == order.status}"></option>
+
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary" th:text="#{orders.changeStatus}">Change Status</button>
+                </form>
+            </td>
+            <td>
+                <a th:href="@{/shop/orders/details/{id}(id=${order.id})}" class="btn btn-secondary">Details</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+</body>
+</html>

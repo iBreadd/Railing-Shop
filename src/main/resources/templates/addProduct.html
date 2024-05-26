@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Добавяне на продукт</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+</head>
+<body>
+<div class="container mt-5">
+    <h1 class="mb-4">Добавяне на продукт</h1>
+    <form th:action="@{/shop/addProduct}" method="post" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="name">Име</label>
+            <input type="text" class="form-control" id="name" name="name" required>
+        </div>
+        <div class="form-group">
+            <label for="description">Описание</label>
+            <textarea class="form-control" id="description" name="description" required></textarea>
+        </div>
+        <div class="form-group">
+            <label for="price">Цена</label>
+            <input type="number" class="form-control" id="price" name="price" step="0.01" required>
+        </div>
+        <div class="form-group">
+            <label for="quantity">Количество</label>
+            <input type="number" class="form-control" id="quantity" name="quantity" required>
+        </div>
+        <div class="form-group form-check">
+            <input class="form-check-input" id="available" name="available" type="checkbox">
+            <label class="form-check-label" for="available">Наличен</label>
+        </div>
+        <div class="form-group">
+            <label for="color">Цвят</label>
+            <select class="form-control" id="color" name="color" required>
+                <option value="" disabled selected>Изберете цвят</option>
+                <option th:each="color : ${T(com.example.RailingShop.Enums.ProductColor).values()}" th:value="${color}" th:text="${color}"></option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="material">Материал</label>
+            <select class="form-control" id="material" name="material" required>
+                <option value="" disabled selected>Изберете материал</option>
+                <option th:each="material : ${T(com.example.RailingShop.Enums.ProductMaterial).values()}" th:value="${material}" th:text="${material}"></option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="manufacturer">Производител</label>
+            <input class="form-control" id="manufacturer" name="manufacturer" required>
+        </div>
+        <div class="form-group">
+            <label for="imageFile">Изображение</label>
+            <input type="file" class="form-control-file" id="imageFile" name="imageFile" accept="image/*" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Добави продукт</button>
+    </form>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+</body>
+</html>

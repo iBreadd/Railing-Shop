@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Edit Product</title>
+    <link rel="stylesheet" type="text/css" href="/css/styles.css"/>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+          integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+</head>
+<body>
+<div class="container mt-5">
+    <h1>Edit Product</h1>
+    <div class="row">
+        <div class="col-md-6">
+            <h4>Current Product:</h4>
+            <table class="table">
+                <tr>
+                    <th>Name:</th>
+                    <td th:text="${product.name}"></td>
+                </tr>
+                <tr>
+                    <th>Price:</th>
+                    <td th:text="${product.price}"></td>
+                </tr>
+                <tr>
+                    <th>Description:</th>
+                    <td th:text="${product.description}"></td>
+                </tr>
+                <tr>
+                    <th>Manufacturer:</th>
+                    <td th:text="${product.manufacturer}"></td>
+                </tr>
+                <tr>
+                    <th>Material:</th>
+                    <td th:text="${product.material}"></td>
+                </tr>
+                <tr>
+                    <th>Color:</th>
+                    <td th:text="${product.color}"></td>
+                </tr>
+                <tr>
+                    <th>Quantity:</th>
+                    <td th:text="${product.quantity}"></td>
+                </tr>
+                <tr>
+                    <th>Available:</th>
+                    <td><input type="checkbox" th:checked="${product.available}" disabled/></td>
+                </tr>
+                <tr>
+                    <th>Current Image:</th>
+                    <td><img th:src="${product.imageUrl}" alt="Product Image" width="100"/></td>
+                </tr>
+            </table>
+        </div>
+        <div class="col-md-6">
+            <h4>Edit Product:</h4>
+            <form th:action="@{/shop/editProduct/{id}(id=${product.id})}" th:object="${product}" method="post"
+                  enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="name">Name:</label>
+                    <input type="text" th:field="*{name}" class="form-control" id="name" required/>
+                </div>
+                <div class="form-group">
+                    <label for="price">Price:</label>
+                    <input type="number" th:field="*{price}" class="form-control" id="price" required/>
+                </div>
+                <div class="form-group">
+                    <label for="description">Description:</label>
+                    <textarea th:field="*{description}" class="form-control" id="description" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="manufacturer">Manufacturer:</label>
+                    <input type="text" th:field="*{manufacturer}" class="form-control" id="manufacturer" required/>
+                </div>
+                <div class="form-group">
+                    <label for="material">Material:</label>
+                    <select th:field="*{material}" class="form-control" id="material">
+                        <option th:each="material : ${T(com.example.RailingShop.Enums.ProductMaterial).values()}"
+                                th:value="${material}" th:text="${material}"
+                                th:selected="${material == product.material}"></option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="color">Color:</label>
+                    <select th:field="*{color}" class="form-control" id="color">
+                        <option th:each="color : ${T(com.example.RailingShop.Enums.ProductColor).values()}"
+                                th:value="${color}" th:text="${color}"
+                                th:selected="${color == product.color}"></option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="quantity">Quantity:</label>
+                    <input type="number" th:field="*{quantity}" class="form-control" id="quantity" required/>
+                </div>
+                <div class="form-group">
+                    <div class="form-check">
+                        <input type="checkbox" th:field="*{available}" class="form-check-input" id="available"/>
+                        <label class="form-check-label" for="available">Available</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="imageFile">Change Image:</label>
+                    <input type="file" id="imageFile" name="imageFile"/>
+                </div>
+                <button type="submit" class="btn btn-primary">Save</button>
+                <a href="/shop/products" class="btn btn-secondary">Back to Products</a>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"
+        integrity="sha384-X51lAUY3rdzPX2fPltuOKiLn/4BKtiXWB6WJsW+U5bXzU0D8wB/ASvWTvbwyn0MH"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+        integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z"
+        crossorigin="anonymous"></script>
+</body>
+</html>
